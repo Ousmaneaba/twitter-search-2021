@@ -10,6 +10,9 @@ pipeline{
           if(env.BRANCH_NAME == 'develop'){
             echo "Creating branch..."
             sh "git checkout -b release_${env.BUILD_NUMBER}"
+            sh "echo release_${env.BUILD_NUMBER}- >> release_version"
+            sh "git add ."
+            sh "git commit -m \"release_${env.BUILD_NUMBER}\""
             withCredentials([usernamePassword(credentialsId: env.git_cred, passwordVariable: env.git_pwd, usernameVariable: env.git_account)]) {
               sh("git push https://${env.git_account}:${env.git_pwd}@github.com/Ousmaneaba/twitter-search-2021.git")
             }
@@ -34,6 +37,7 @@ pipeline{
             withCredentials([usernamePassword(credentialsId: env.git_cred, passwordVariable: env.git_pwd, usernameVariable: env.git_account)]) {
               sh("git merge release_${env.BUILD_NUMBER}")
             }
+            sh "git commit -m \"merge release_${env.BUILD_NUMBER}\""
             withCredentials([usernamePassword(credentialsId: env.git_cred, passwordVariable: env.git_pwd, usernameVariable: env.git_account)]) {
               sh("git push https://${env.git_account}:${env.git_pwd}@github.com/Ousmaneaba/twitter-search-2021.git")
             }
